@@ -3,4 +3,4 @@ Voice to text-based location search system implementation - using NLP Library [N
    			- Tokenize the text, remove stop words
     		- Uni-gram of text, word stemming 
         - TF-IDF scoring (This is done against the historical search dataset) and identifying the most significant words for the 
-          most accurate search
+          accurate search results
