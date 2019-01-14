@@ -1,0 +1,28 @@
+import math
+from textblob import TextBlob as tb
+
+def tf(word, blob):
+    return blob.words.count(word) / len(blob.words)
+
+def n_containing(word, bloblist):
+    return sum(1 for blob in bloblist if word in blob)
+
+def idf(word, bloblist):
+    return math.log(len(bloblist) / (1 + n_containing(word, bloblist)))
+
+def tfidf(word, blob, bloblist):
+    return tf(word, blob) * idf(word, bloblist)
+
+document1 = tb("""Italy I finally get the hype. AmazingI've always wanted to try this place but the long waits made me think otherwise. Saturday at around 6:30 I put my name down and waited approximately 30 minutes to sit at the bar.Keep in mind the bar has a different menu but you do get seated quicker if you decide to sit there.Now on to the food! Our chef, cut our slices of fish thick! Which I really appreciate. Some of my favorites were the salmon belly, yellowtail, fatty tuna, live octopus, and of course the uni! The fish were fresh, and everything tasted delicious. I would definitely come again if I wasn't hungry enough to wait in the line :)I went by myself around 1:30 and was waited in line for 30 mins. It was not bad.Since I just had brunch I was quite full. I ordered the Sashimi Deluxe. It was during lunch time so the sashimi deluxe was only $19.95 with miso soup, tofu and a small plate of veggies.The dish came fast. The fish was super fresh. Those two kinds of cooked fish on top were delicious also! There were also two kinds of seasoned fish at the bottom.Very nice food and good service. Definitely worth to wait in line!I decided to take my boyfriend here for his birthday dinner. I made a reservation a few weeks in advanced with no problems. We arrived a bit early and the host told us that he would try to seat us earlier. He came out to get us and asked us if we would like to sit at a table in the middle. We declined and said we were willing to wait for a different table. I'm glad we did. We ended up at a corner booth.Came here for lunch today and the wait was over an hour.  The food came pretty quickly as soon as we ordered.We ordered the sashimi lunch $20 and the beef teriyaki plate $15.The portions were descent.  The sashimi was very fresh and the lunch came with soup, small salad and an appetizer.  The beef teriyaki was for my son and he said it was very moist.I've been here exactly two times and the first time didn't wow me so I didn't even bother to make a review, but I came back here again last night as a treat from my friend for my birthday & it was amazing!! We arrived around 7:45 ish on a Wednesday night & still had to wait a good amount of time before being seated at the bar. The first time I dined here I sat at the regular tables and got a chirashi bowl, it was nothing close to the hype around this place so I didn't come back until my friend wanted to come here.We arrived at Friday11:10 and the line was probably 30 people deep. We ended up getting seated around 12:30, an hour after they open. It is worth it for the lunch deal! We got the sushi deluxe combo ($25) and the hamachi collar ($20). The hamachi collar comes with a sashimi appetizer, tofu appetizer, miso soup, a giant hamachi and rice. I was stuffed by the end of it! The husband got the sushi deluxe which came with the platter, salmon skin salad and miso soup.""")
+
+document2 = tb("""Came several times already. This place is in little Tokyo and kinda hard to make a reservation. I feel the best way to get a seat is to wait outside at 5:20pm and it opens at 5:30pm.Fish were all very fresh- no matter what you order. I tried sushi, sashimi, chirashi. They never disappoint me. I also sat at the sushi bar once and ordered a lot a la carte. Personally like abalone and aji. Negitoro hand roll is a must try. It's a bit oily I have to admit but it tastes so great with the crispy seaweed wrap.The price is very decent compared to some Japanese restaurants nearby.I will definitely go more if I get a chance to go to LA again.I have gone to better restaurants in Little Tokyo.  But this one always has a huge line and I just cannot understand why.  It's ok, but not excellent!This is definitely a "I want to impress my date" place. This isn't cheap, so if you really want to come here, be prepared to spend a little. They accept CC and after our meal, we went to grab beers. When we walked back around at 9:00pm, there was still a line. That should say a lot!""")
+
+document3 = tb("""I have waited for long hours ...the service is very bad. """)
+
+bloblist = [document1, document2,document3]
+for i, blob in enumerate(bloblist):
+    print("Top words in document {}".format(i + 1))
+    scores = {word: tfidf(word, blob, bloblist) for word in blob.words}
+    sorted_words = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    for word, score in sorted_words[:5]:
+        print("Word: {}, TF-IDF: {}".format(word, round(score, 5)))
